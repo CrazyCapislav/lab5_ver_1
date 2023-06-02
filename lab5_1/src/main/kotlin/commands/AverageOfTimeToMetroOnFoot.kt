@@ -1,9 +1,13 @@
 package src.main.kotlin.commands
+import models.Flat
 
-import src.main.kotlin.models.Flat
+//import src.server.client.server.client.server.client.main.kotlin.models.Flat
 
-//
+/**
+ * Среднее значение параметра
+ */
 class AverageOfTimeToMetroOnFoot : Command() {
+
     override val commandName: String = "average_of_time_to_metro_on_foot"
     override fun writeString() {
         println("Среднее время до метро")

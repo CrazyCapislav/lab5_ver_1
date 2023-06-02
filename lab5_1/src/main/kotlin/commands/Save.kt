@@ -1,11 +1,14 @@
 package src.main.kotlin.commands
-
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
-import src.main.kotlin.models.Flat
+import models.Flat
+//import src.server.client.server.client.server.client.main.kotlin.models.Flat
 import java.io.File
 import java.io.FileOutputStream
-
+/**
+ * Один из классов команд
+ */
 class Save : Command() {
+
     override val commandName: String = "save"
     override fun writeString() {
         println("Сохранение...")

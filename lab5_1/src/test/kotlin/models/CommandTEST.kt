@@ -5,8 +5,7 @@ import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import src.main.kotlin.commands.RemoveById
-import src.main.kotlin.managers.CommandManager
-import src.main.kotlin.models.Flat
+import managers.CommandManager
 
 class CommandTEST {
     @Test

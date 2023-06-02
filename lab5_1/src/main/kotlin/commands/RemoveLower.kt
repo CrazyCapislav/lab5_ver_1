@@ -1,8 +1,12 @@
 package src.main.kotlin.commands
+import models.Flat
 
-import src.main.kotlin.models.Flat
-
+//import src.server.client.server.client.server.client.main.kotlin.models.Flat
+/**
+ * Один из классов команд
+ */
 class RemoveLower : Command() {
+
     override val commandName: String = "remove_lower {element}"
     override fun writeString() {
         println("Удалить id ниже чем")

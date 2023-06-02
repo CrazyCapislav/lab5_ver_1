@@ -1,14 +1,21 @@
-package src.main.kotlin.managers
+package managers
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator
+import models.Flat
 import src.main.kotlin.commands.*
-import src.main.kotlin.models.Flat
 import src.main.kotlin.other.MyHashSet
 import java.io.File
 import java.io.FileOutputStream
-
+/**
+ * Класс CommandManager предоставляет способ управления и выполнения команд, вводимых пользователем.
+ *
+ * @since 1.0
+ */
 class CommandManager {
+    /**
+     * Запускает менеджер команд с указанным файлом коллекции.
+     */
     fun start(arg:String){
         val help = Help()
         val add = Add()
@@ -29,6 +36,9 @@ class CommandManager {
             "file1.txt"
         }
         var file = File(collectionFolder)
+        /**
+         * Проверка файла с данными коллекции
+         */
         if (!file.exists()) {
             println("Файл не найден: $collectionFolder")
             file = File("file1.txt")
@@ -51,11 +61,17 @@ class CommandManager {
         }
         val xmlMapper = XmlMapper.builder().build()
         var xmlHashSet: HashSet<Flat> = xmlMapper.readValue(file, object : TypeReference<HashSet<Flat>>() {})
+        /**
+         * Класс-оболочка для получения времени инициализации
+         */
         val initDate = MyHashSet(xmlHashSet).creationDate
         while(true) {
             arrayId = mutableListOf()
             xmlHashSet.forEach { arrayId.add(it.id) }
             println("Введи команду, чтобы продолжить! (help - узнать все команды)")
+            /**
+             * Варианты ввода
+             */
             when (val read = readLine()) {
                 "help" -> help.writeString()
                 "add" -> {add.start(xmlHashSet, arrayId);xmlHashSet.forEach { arrayId.add(it.id) }}
@@ -72,6 +88,9 @@ class CommandManager {
                 "UTTMOF" -> UTTMOF.uniqueTime(xmlHashSet)
                 null -> {println("WTF"); break
                 }
+                /**
+                 * Ввод Ctrl+D приводит к выходу из программы (эквивалент exit)
+                 */
                 else -> {
                     val parts = read.split(" ")
                     if (parts.size == 2){
@@ -145,5 +164,153 @@ class CommandManager {
             }
         }
         println("Выход")
+    }
+    fun commandReqest(command: String){
+        val help = Help()
+        val add = Add()
+        val show = Show()
+        val save = Save()
+        val clear = Clear()
+        val updateId = UpdateId()
+        val addIfMax = AddIfMax()
+        val execute = ExecuteScript()
+        val averageOfTimeToMetroOnFoot = AverageOfTimeToMetroOnFoot()
+        val UTTMOF = PrintUniqueTimeToMetroOnFoot()
+        val removeGreater = RemoveGreater()
+        val removeLower = RemoveLower()
+        val removeById = RemoveById()
+        val removeAllByNumberOfRooms = RemoveAllByNumberOfRooms()
+        var arrayId : MutableList<Long> = mutableListOf()
+        val collectionFolder: String = command.ifBlank {
+            "file1.txt"
+        }
+        var file = File(collectionFolder)
+        /**
+         * Проверка файла с данными коллекции
+         */
+        if (!file.exists()) {
+            println("Файл не найден: $collectionFolder")
+            file = File("file1.txt")
+            file.createNewFile()
+            println("Создан новый файл: file1.txt")
+            println("Запись в файл: file1.txt")
+            val outputStream = FileOutputStream(file)
+            val hashSet = HashSet<Flat>()
+            val xmlMapper = XmlMapper.builder().build()
+            xmlMapper.configure(ToXmlGenerator.Feature.WRITE_XML_DECLARATION, true)
+            val xmlCollecion = xmlMapper.writeValueAsString(hashSet)
+            outputStream.write(xmlCollecion.toByteArray())
+            outputStream.close()
+
+            println("Содержимое файла: $collectionFolder")
+            val inputStream = file.inputStream()
+            val newContent = inputStream.bufferedReader().use { it.readText() }
+            println(newContent)
+            inputStream.close()
+        }
+        val xmlMapper = XmlMapper.builder().build()
+        var xmlHashSet: HashSet<Flat> = xmlMapper.readValue(file, object : TypeReference<HashSet<Flat>>() {})
+        /**
+         * Класс-оболочка для получения времени инициализации
+         */
+        val initDate = MyHashSet(xmlHashSet).creationDate
+        while(true) {
+            arrayId = mutableListOf()
+            xmlHashSet.forEach { arrayId.add(it.id) }
+            println("Введи команду, чтобы продолжить! (help - узнать все команды)")
+            /**
+             * Варианты ввода
+             */
+            when (val read = command) {
+                "help" -> help.writeString()
+                "add" -> {add.start(xmlHashSet, arrayId);xmlHashSet.forEach { arrayId.add(it.id) }}
+                "show" -> show.showElement(xmlHashSet)
+                "exit" -> break
+                "save" -> save.saveChanges(xmlHashSet, collectionFolder)
+                "clear" -> {clear.clear(collectionFolder); xmlHashSet = xmlMapper.readValue(file, object : TypeReference<HashSet<Flat>>() {})}
+                "info" -> {
+                    println("Тип коллекции - HashSet")
+                    println("Дата инициализации - $initDate")
+                    println("Размер - ${xmlHashSet.size}")
+                }
+                "averageMetro" -> averageOfTimeToMetroOnFoot.averageMetro(xmlHashSet)
+                "UTTMOF" -> UTTMOF.uniqueTime(xmlHashSet)
+                null -> {println("WTF"); break
+                }
+                /**
+                 * Ввод Ctrl+D приводит к выходу из программы (эквивалент exit)
+                 */
+                else -> {
+                    val parts = read.split(" ")
+                    if (parts.size == 2){
+                        when(parts[0]){
+                            "update_id" -> {
+                                val id = parts[1].toLongOrNull()
+                                if (id != null) {
+                                    updateId.update(xmlHashSet, id)
+                                } else {
+                                    return println("Неверный формат команды")
+                                }
+                            }
+                            "addIfMax" -> {
+                                val id = parts[1].toLongOrNull()
+                                if (id!=null){
+                                    addIfMax.addIfM(xmlHashSet, id, arrayId)
+                                }
+                                else {
+                                    return println("Неверный формат команды")
+                                }
+                            }
+                            "execute" ->{
+                                val folder = parts[1]
+                                if (folder.isNotBlank()) {
+                                    execute.execute(folder, collectionFolder)
+                                } else {
+                                    return println("Неверный формат команды")
+                                }
+                            }
+                            "removeLower" ->{
+                                val folder = parts[1]
+                                if (folder.isNotBlank()) {
+                                    removeLower.removeLower(xmlHashSet, folder.toLong())
+                                } else {
+                                    return println("Неверный формат команды")
+                                }
+                            }
+                            "removeGreater" ->{
+                                val folder = parts[1]
+                                if (folder.isNotBlank()) {
+                                    removeGreater.removeGreater(xmlHashSet, folder.toLong())
+                                } else {
+                                    return println("Неверный формат команды")
+                                }
+                            }
+                            "removeAllByNOR" ->{
+                                val folder = parts[1]
+                                if (folder.isNotBlank()) {
+                                    removeAllByNumberOfRooms.removeByRooms(xmlHashSet, folder.toInt())
+                                } else {
+                                    return println("Неверный формат команды")
+                                }
+                            }
+                            "removeById" ->{
+                                val folder = parts[1]
+                                if (folder.isNotBlank()) {
+                                    removeById.removeById(xmlHashSet, folder.toLong())
+                                } else {
+                                    return println("Неверный формат команды")
+                                }
+                            }
+                            else->{
+                                return println("Неверный формат команды")
+                            }
+                        }
+                    }
+                    else {
+                        return println("Неверный формат команды")
+                    }
+                }
+            }
+        }
     }
 }

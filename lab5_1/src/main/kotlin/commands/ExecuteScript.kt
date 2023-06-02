@@ -1,18 +1,25 @@
 package src.main.kotlin.commands
-
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
-import src.main.kotlin.models.Flat
+import models.Flat
+//import src.server.client.server.client.server.client.main.kotlin.models.Flat
 import src.main.kotlin.other.MyHashSet
 import java.io.File
-
+/**
+ * Запуск скрипта из файла
+ */
 class ExecuteScript : Command() {
+
     override val commandName: String = "execute_script file_name"
     override fun writeString() {
         println("Запуск скрипта")
     }
+    /**
+     * Частично копирует Command Manager
+     */
     fun execute(scriptFolder: String, collectionFolder: String){
         val scriptFile = File(scriptFolder)
+
         val help = Help()
         val add = Add()
         val show = Show()

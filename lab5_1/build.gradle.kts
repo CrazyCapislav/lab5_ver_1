@@ -3,8 +3,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm") version "1.8.10"
-//    kotlin("plugin.serialization") version "1.8.10"
     id("com.github.johnrengelman.shadow") version "7.1.2"
+    id("org.jetbrains.dokka") version "1.8.10"
     application
 }
 
@@ -18,8 +18,8 @@ repositories {
 dependencies {
     testImplementation(kotlin("test"))
     implementation("org.jetbrains.kotlin:kotlin-stdlib")
+    implementation("ch.qos.logback:logback-classic:1.4.6")
     testImplementation ("io.mockk:mockk:1.13.4")
-//    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
     implementation(kotlin("stdlib-jdk8"))
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.14.2")
 }
@@ -54,5 +54,5 @@ tasks.withType<Jar> {
     })
 }
 application {
-    mainClass.set("src.main.kotlin.MainKt")
+    mainClass.set("client.ClientKt")
 }

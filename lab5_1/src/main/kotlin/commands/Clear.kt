@@ -2,11 +2,15 @@ package src.main.kotlin.commands
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator
-import src.main.kotlin.models.Flat
+import models.Flat
+//import src.server.client.server.client.server.client.main.kotlin.models.Flat
 import java.io.File
 import java.io.FileOutputStream
-
+/**
+ * Очищает коллекцию
+ */
 class Clear : Command() {
+
     override val commandName: String = "clear"
     override fun writeString() {
         println("Очистка коллекции")
@@ -18,6 +22,9 @@ class Clear : Command() {
         xmlMapper.configure(ToXmlGenerator.Feature.WRITE_XML_DECLARATION, true)
         val xmlCollecion = xmlMapper.writeValueAsString(hashSet)
         outputStream.write(xmlCollecion.toByteArray())
+        /**
+         * Фактически идет перезапись коллекции на пустую
+         */
         outputStream.close()
     }
 }

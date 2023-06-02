@@ -1,8 +1,12 @@
 package src.main.kotlin.commands
+import models.Flat
 
-import src.main.kotlin.models.Flat
-
+//import src.server.client.server.client.server.client.main.kotlin.models.Flat
+/**
+ * Один из классов команд
+ */
 class RemoveAllByNumberOfRooms : Command() {
+
     override val commandName: String = "remove_all_by_number_of_rooms numberOfRooms"
     override fun writeString() {
         println("Удалить все с числом комнат")

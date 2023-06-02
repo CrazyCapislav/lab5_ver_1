@@ -1,11 +1,15 @@
-package src.main.kotlin.models
-
+package models
+import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
+import src.main.kotlin.models.Coordinates
+import src.main.kotlin.models.Furnish
+import src.main.kotlin.models.House
 import java.time.LocalDateTime
 
 @JacksonXmlRootElement(localName = "item")
-class Flat(
+@JsonInclude(JsonInclude.Include.NON_NULL)
+class Flat (
     @JacksonXmlProperty(localName = "id")
     val id: Long = 0,
     @JacksonXmlProperty(localName = "name")
@@ -23,16 +27,15 @@ class Flat(
     @JacksonXmlProperty(localName = "furnish")
     var furnish: Furnish?,
     @JacksonXmlProperty(localName = "house")
-    var house: House? = House(),
+    var house: House? = null,
     @JacksonXmlProperty(localName = "creationDate")
     var creationDate: String = LocalDateTime.now().toString()
-){
+) {
     override fun toString(): String {
         return "$name, $creationDate, $id, $coordinates, $area, $numberOfRooms, $livingSpace, $timeToMetroOnFoot, $furnish, $house"
     }
 
-    fun showDate(){
+    fun showDate() {
         println(creationDate)
     }
 }
-//fun getID():Long{return id}
